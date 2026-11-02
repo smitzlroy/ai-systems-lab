@@ -21,6 +21,7 @@
   let current = store.get(`${KEY}-lesson`, "request");
   let topic = "inference";
   let scenarioId = "";
+  let sovereigntyPage = "learn";
   const topics = window.LEARNING_TOPICS;
   let toastTimer;
 
@@ -80,7 +81,7 @@
       <h3 class="section-space">What this example tells you</h3><ol class="scenario-explanation">${scenario.worked.map(t=>`<li>${escape(t)}</li>`).join("")}</ol></section>
       <section class="panel section-space"><fieldset class="scenario-question"><legend>Decision checkpoint</legend><p>${escape(scenario.question)}</p>${scenario.choices.map((choice,i)=>`<label class="scenario-option"><input type="radio" name="scenario-answer" data-scenario-choice="${i}" value="${i}"><span>${escape(choice.text)}</span></label>`).join("")}</fieldset><div id="scenario-feedback" class="scenario-feedback" role="status" hidden></div></section>
       <section class="panel section-space"><h2>Before you call this a successful test</h2><ul class="scenario-explanation">${scenario.evaluate.map(t=>`<li>${escape(t)}</li>`).join("")}</ul><p class="muted">The synthetic exercise does not satisfy this checklist. It shows what a real evaluation would need to establish.</p></section>
-      <section class="research-bridge"><p class="eyebrow">CONTROL &amp; SOVEREIGNTY</p><h2>Follow more than the model</h2><p>${escape(scenario.control)}</p><a href="#sovereignty">Explore the European sovereignty curriculum</a></section>
+      <section class="research-bridge"><p class="eyebrow">CONTROL &amp; SOVEREIGNTY</p><h2>Follow more than the model</h2><p>${escape(scenario.control)}</p><a href="#sovereignty">Explore sovereignty across EMEA</a></section>
       <section class="panel section-space"><h2>Return to the underlying lessons</h2><div class="scenario-lesson-links">${scenario.lessons.map(id=>{const lesson=window.LEARNING_PLAN.lessons.find(l=>l.id===id);return `<a class="button" href="#inference/${escape(id)}">${escape(lesson.title)}</a>`;}).join("")}</div><p class="muted">The diagrams and labs teach relationships; none of their numbers should be read as this scenario's observed performance.</p></section>`;
   }
 
@@ -92,12 +93,75 @@
       ${practiceLinks(item.id)}${recommended(item.id)}`;
   }
 
+  function sovereigntySources(sources) {
+    return `<ul class="sovereignty-sources">${sources.map(([label,url])=>`<li><a href="${escape(url)}" target="_blank" rel="noopener noreferrer">${escape(label)} ↗</a></li>`).join("")}</ul>`;
+  }
+
+  function sovereignty() {
+    const data = window.SOVEREIGNTY;
+    if (!data) return `<h1>Sovereignty content could not load</h1><p>Check that the sovereignty data script is present.</p>`;
+    const pages = [
+      {id:"learn",label:"Start here",heading:"Sovereignty is a set of decisions, not a postcode.",intro:"A plain-English guide to control, responsibility and trust across Europe, the Middle East and Africa. No engineering background required."},
+      {id:"atlas",label:"EMEA guide",heading:"Different places. Different rulebooks.",intro:"Find the legal questions that matter before selecting a deployment. Each entry separates the instrument, its status, its practical meaning and the next question to ask."},
+      {id:"standards",label:"Badges & evidence",heading:"Read the scope behind the badge.",intro:"A law creates obligations. A standard describes requirements or practices. A certificate, qualification or assurance report provides a particular kind of evidence. None is a universal permission to use AI."},
+      {id:"providers",label:"Provider positions",heading:"Translate the sovereignty pitch into questions.",intro:"What Mistral, Microsoft and other providers say, what their offers aim to address, and what a buyer still needs to establish. Different approaches, not a league table."},
+      {id:"practice",label:"Decision practice",heading:"Make the case without hiding the unknowns.",intro:"Three fictional business situations. Choose the most useful next step, then practise building an evidence-led recommendation."}
+    ];
+    const active = pages.find(p=>p.id===sovereigntyPage);
+    if (!active) return `<h1>Sovereignty page not found</h1><p>This section link is not available.</p><a href="#sovereignty">Return to the learning guide</a>`;
+    const header = `<nav class="scenario-nav sovereignty-nav" aria-label="Sovereignty sections">${pages.map(p=>`<a href="#sovereignty/${p.id}"${p.id===active.id?' aria-current="page"':""}>${escape(p.label)}</a>`).join("")}</nav>
+      <section class="library-heading"><p class="eyebrow">EMEA SOVEREIGNTY / ${escape(active.label)}</p><h1>${escape(active.heading)}</h1><p>${escape(active.intro)}</p></section>
+      <aside class="sovereignty-note"><strong>Learning, not legal clearance.</strong> Research reviewed ${escape(data.reviewed)}. Summaries are selective; verify current law, applicability and contract terms with qualified advisers. Sources include legislation, regulator guidance, standards-body summaries and clearly labelled vendor positions. Full standards may require purchase.</aside>`;
+    let body;
+    if (active.id === "learn") {
+      body = `<section class="sovereignty-path"><h2>A useful first hour</h2><ol><li><b>Understand the language.</b> Read the four distinctions below and work through the six short lessons.</li><li><b>Choose a place.</b> Open one relevant entry in the <a href="#sovereignty/atlas">EMEA guide</a>; identify what you would need to verify.</li><li><b>Challenge a claim.</b> Compare two <a href="#sovereignty/providers">provider positions</a>, then try the <a href="#sovereignty/practice">decision exercises</a>.</li></ol><p>Leave with a one-page recommendation, not a memorised list of laws.</p></section>
+        <section class="section-space"><h2>Four words that are not interchangeable</h2><div class="sovereignty-lenses">${data.lenses.map(([title,text],i)=>`<article><span class="module-number">0${i+1}</span><h3>${escape(title)}</h3><p>${escape(text)}</p></article>`).join("")}</div></section>
+        <details class="sovereignty-detail"><summary><span>A small plain-English glossary</span><small>${data.glossary.length} terms you will meet in the guide</small></summary><dl class="sovereignty-glossary">${data.glossary.map(([term,text])=>`<div><dt>${escape(term)}</dt><dd>${escape(text)}</dd></div>`).join("")}</dl></details>
+        <section class="section-space"><h2>Learn to lead the conversation</h2><p class="muted">Open a lesson, read the example and complete the short task. There is no technical setup.</p>${data.lessons.map((lesson,i)=>`<details class="sovereignty-detail"${i===0?" open":""}><summary><span>${i+1}. ${escape(lesson.title)}</span><small>${escape(lesson.time)}</small></summary><div class="sovereignty-detail-body"><p class="sovereignty-point">${escape(lesson.point)}</p>${lesson.paragraphs.map(p=>`<p>${escape(p)}</p>`).join("")}<aside class="sovereignty-example">${escape(lesson.example)}</aside><p class="sovereignty-task"><b>Your next useful output</b> ${escape(lesson.task)}</p>${sovereigntySources(lesson.sources)}</div></details>`).join("")}</section>
+        <section class="research-bridge"><h2>Control is also an economic choice</h2><p>Ask what local capability, competition, skills, language support and continuity the investment creates. Compare that benefit with cost, service limitations and the responsibilities your organisation takes on. National industrial policy, organisational autonomy and legal compliance overlap, but they are not the same objective.</p><a href="#sovereignty/providers">Explore the different provider approaches</a></section>${practiceLinks("sovereignty")}`;
+    } else if (active.id === "atlas") {
+      body = `<section class="sovereignty-scope"><h2>What this guide covers</h2><p>${escape(data.scope)}</p><p>Each regime has its own reach: the customer's establishment, people affected, intended use and market served may matter as well as the hosting location. For countries outside this selection, start with the local regulator, official legislation and sector authority; do not extend a neighbouring country's rules by analogy.</p></section>
+        <div class="library-filters sovereignty-filters"><label>Find a country or instrument<input id="sovereignty-search" type="search" placeholder="Try PDPL, Kenya, finance or transfer"></label><label>Region<select id="sovereignty-region"><option value="">All regions</option><option>Europe</option><option>Middle East</option><option>Africa</option></select></label></div>
+        <p id="sovereignty-count" role="status">${data.countries.length} of ${data.countries.length} guides</p>
+        <section aria-label="Country and regional guides">${data.countries.map(country=>`<details class="sovereignty-detail sovereignty-country" data-region="${escape(country.region)}" data-search="${escape(JSON.stringify(country).toLowerCase())}"><summary><span>${escape(country.name)}</span><small>${escape(country.region)} / ${country.rules.length} entries</small></summary><div class="sovereignty-detail-body"><p class="sovereignty-point">${escape(country.hook)}</p>${country.rules.map(rule=>`<article class="sovereignty-rule"><p class="eyebrow">${escape(rule.type)}</p><h3>${escape(rule.title)}</h3><p class="sovereignty-status"><b>Status / scope:</b> ${escape(rule.status)}</p><p>${escape(rule.meaning)}</p><p><b>What to do with this:</b> ${escape(rule.action)}</p>${sovereigntySources(rule.sources)}</article>`).join("")}<aside class="sovereignty-example"><b>Do not overlook:</b> ${escape(country.watch)}</aside><p class="sovereignty-task"><b>Try explaining this:</b> ${escape(country.task)}</p></div></details>`).join("")}</section>
+        <p id="sovereignty-empty" hidden>No matching guides. Try another term or choose all regions. An absent country is outside this guide's coverage, not free of obligations.</p>
+        <section class="section-space"><h2>Watch next - not a list of current obligations</h2><div class="sovereignty-cards">${data.watchlist.map(item=>`<article class="roadmap-card"><p class="eyebrow">${escape(item.status)}</p><h3>${escape(item.title)}</h3><p>${escape(item.text)}</p>${sovereigntySources(item.sources)}</article>`).join("")}</div></section>`;
+    } else if (active.id === "standards") {
+      body = `<section class="sovereignty-path"><h2>Use five checks before trusting a badge</h2><ol><li><b>Issuer:</b> who assessed it, and under which scheme?</li><li><b>Object:</b> the organisation, management system, hosting offer or AI application?</li><li><b>Scope:</b> exactly which services, activities, locations and exclusions?</li><li><b>Time:</b> current validity or reporting period, plus changes since assessment?</li><li><b>Your part:</b> which duties and control settings remain with the customer?</li></ol></section>
+        <div class="sovereignty-cards section-space">${data.standards.map(s=>`<article class="roadmap-card"><p class="eyebrow">${escape(s.type)}</p><h2>${escape(s.title)}</h2><p><b>What it can support:</b> ${escape(s.proves)}</p><p><b>What it does not establish:</b> ${escape(s.not)}</p><p class="sovereignty-task"><b>Ask for evidence:</b> ${escape(s.ask)}</p>${sovereigntySources(s.sources)}</article>`).join("")}</div>
+        <section class="research-bridge"><h2>National rules may require different evidence</h2><p>Saudi NCA controls, Morocco's DGSSI cloud qualification and other national or sector frameworks need their own scope checks. An ISO certificate does not replace them. The EUCS material linked in the watchlist is a candidate document, not evidence that a provider holds a current certificate.</p><a href="#sovereignty/atlas">Return to the country guide and watchlist</a></section>`;
+    } else if (active.id === "providers") {
+      body = `<aside class="scenario-boundary"><strong>Vendor statements, not independent assurance.</strong><p>These are original summaries of public provider materials, not endorsements, legal conclusions or confirmation of every feature's availability. Compare the exact service, geography, legal entity and contract. No provider is declared universally sovereign or compliant.</p></aside>
+        <div class="sovereignty-cards">${data.providers.map(p=>`<article class="roadmap-card sovereignty-provider"><p class="eyebrow">PUBLIC PROVIDER POSITION</p><h2>${escape(p.name)}</h2><h3>${escape(p.lens)}</h3><p>${escape(p.position)}</p><p><b>Published offer:</b> ${escape(p.offers)}</p><p><b>When this lens is useful:</b> ${escape(p.useful)}</p><p><b>Do not assume:</b> ${escape(p.limits)}</p><h4>Three questions to take into the conversation</h4><ol>${p.questions.map(q=>`<li>${escape(q)}</li>`).join("")}</ol>${sovereigntySources(p.sources)}</article>`).join("")}</div>
+        <section class="research-bridge"><h2>Use the same comparison for every supplier</h2><p>Compare location and access; legal entities and duties; scope of assurance; control of models and adaptations; continuity and exit; cost and skills. A local operator can use foreign technology; a global supplier can offer local controls. Investigate the actual arrangement rather than treating nationality as the answer.</p><a href="#sovereignty/practice">Practise the decision</a></section>`;
+    } else {
+      body = `<p class="muted">Every case is fictional. Answers stay on this page, are not saved and do not produce a compliance score.</p>${data.exercises.map(ex=>`<section class="panel section-space"><h2>${escape(ex.title)}</h2><p>${escape(ex.story)}</p><fieldset class="scenario-question"><legend>${escape(ex.question)}</legend>${ex.choices.map(([text],i)=>`<label class="scenario-option"><input type="radio" name="sovereignty-${escape(ex.id)}" data-sovereignty-exercise="${escape(ex.id)}" data-sovereignty-answer="${i}" value="${i}"><span>${escape(text)}</span></label>`).join("")}</fieldset><div id="sovereignty-feedback-${escape(ex.id)}" class="scenario-feedback" role="status" hidden></div><p><b>Keep in mind:</b> ${escape(ex.takeaway)}</p><div class="scenario-lesson-links">${ex.links.map(([text,url])=>`<a href="${escape(url)}">${escape(text)}</a>`).join("")}</div></section>`).join("")}
+        <section class="panel section-space"><h2>Your one-page decision brief</h2><p>Use a fictional service. Tick a question when you can explain what evidence you would seek, not when you think compliance has been achieved. Do not enter real customer or personal information here.</p>${data.evidence.map(([title,text],i)=>`<label class="scenario-option"><input type="checkbox" data-sovereignty-evidence="${i}"><span><b>${escape(title)}</b><br>${escape(text)}</span></label>`).join("")}<p id="sovereignty-evidence-count" role="status">0 of ${data.evidence.length} questions considered. Not an approval or compliance assessment.</p><p class="muted">Nothing is submitted, uploaded or saved. In a real process, keep the evidence and approvals in your organisation's authorised system.</p></section>`;
+    }
+    return header + body;
+  }
+
+  function filterSovereignty() {
+    const needle = $("#sovereignty-search").value.trim().toLowerCase();
+    const region = $("#sovereignty-region").value;
+    const cards = [...document.querySelectorAll(".sovereignty-country")];
+    let shown = 0;
+    cards.forEach(card=>{
+      const hit = (!needle || card.dataset.search.includes(needle)) && (!region || card.dataset.region === region);
+      card.hidden = !hit;
+      if (hit) shown++;
+    });
+    $("#sovereignty-count").textContent = `${shown} of ${cards.length} guides`;
+    $("#sovereignty-empty").hidden = shown > 0;
+  }
+
   function library() {
     const research = window.LEARNING_RESEARCH;
     if (!research) return `<h1>Research could not load</h1><p>Check that the research data script is present.</p>`;
     const providers = [...new Set(research.resources.map(r=>r.provider))];
     return `<section class="library-heading"><p class="eyebrow">STUDY PATH / SOURCE LIBRARY</p><h1>Learn the system, not just the tool.</h1><p>For infrastructure-minded builders connecting technical depth with product decisions, economics and governance. Start with inference; use foundations to fill gaps rather than beginning with a generic AI overview.</p><p class="muted">Research reviewed ${escape(research.reviewed)}. A curated cross-provider selection, not an exhaustive catalogue. Links are references, not endorsements; courses and API usage may require accounts or payment.</p></section>
       <section class="study-path"><h2>A practical route through the material</h2><ol>${research.path.map(s=>`<li><a href="#${escape(s.to)}">${escape(s.title)}</a><p>${escape(s.output)}</p></li>`).join("")}</ol></section>
+      <section class="research-bridge"><h2>Sovereignty across EMEA</h2><p>Go beyond the EU syllabus: plain-English lessons, country-specific legal questions, qualifications and provider positions, with primary sources alongside each topic.</p><a href="#sovereignty">Open the sovereignty learning guide</a></section>
       <section class="section-space"><h2>The themes shaping this curriculum</h2><div class="roadmap-grid">${research.themes.map(t=>`<article class="roadmap-card"><h3>${escape(t.title)}</h3><p>${escape(t.text)}</p><p><a href="${escape(t.url)}" target="_blank" rel="noopener noreferrer">Read the primary source ↗</a></p></article>`).join("")}</div></section>
       <section class="section-space"><h2>Choose your next useful resource</h2><div class="library-filters"><input id="resource-search" type="search" aria-label="Search resources" placeholder="Search KV cache, agents, evaluation..."><select id="resource-provider" aria-label="Filter by provider"><option value="">All providers</option>${providers.map(p=>`<option>${escape(p)}</option>`).join("")}</select><select id="resource-topic" aria-label="Filter by topic"><option value="">All topics</option>${topics.map(t=>`<option value="${escape(t.id)}">${escape(t.title)}</option>`).join("")}</select></div><p id="resource-count" role="status">${research.resources.length} resources</p><div class="resource-grid" id="resource-list">${resourceCards(research.resources)}</div><p id="resource-empty" hidden>No matching resources. Try another topic or provider.</p></section>`;
   }
@@ -105,6 +169,7 @@
   function view() {
     if (topic === "practice") return practice();
     if (topic === "library") return library();
+    if (topic === "sovereignty") return sovereignty();
     const selected = topics.find(t=>t.id === topic);
     if (topic !== "inference") return roadmap(selected);
     const plan = window.LEARNING_PLAN;
@@ -186,6 +251,7 @@
   });
   document.addEventListener("input", event => {
     if (event.target.id === "resource-search") filterResources();
+    if (event.target.id === "sovereignty-search") filterSovereignty();
     if (event.target.id !== "glossary-filter") return;
     const needle = event.target.value.trim().toLowerCase();
     let shown = 0;
@@ -195,6 +261,20 @@
   });
   document.addEventListener("change", event => {
     const target = event.target;
+    if (target.id === "sovereignty-region") filterSovereignty();
+    if (target.hasAttribute("data-sovereignty-answer")) {
+      const exercise = window.SOVEREIGNTY?.exercises.find(e=>e.id===target.dataset.sovereigntyExercise);
+      const choice = exercise?.choices[Number(target.dataset.sovereigntyAnswer)];
+      const feedback = exercise ? $(`#sovereignty-feedback-${exercise.id}`) : null;
+      if (!choice || !feedback) { notify("This exercise could not be loaded. Reopen the sovereignty section and try again."); return; }
+      feedback.textContent = choice[2];
+      feedback.dataset.correct = String(choice[1]);
+      feedback.hidden = false;
+    }
+    if (target.hasAttribute("data-sovereignty-evidence")) {
+      const considered = document.querySelectorAll("[data-sovereignty-evidence]:checked").length;
+      $("#sovereignty-evidence-count").textContent = `${considered} of ${window.SOVEREIGNTY.evidence.length} questions considered. Not an approval or compliance assessment.`;
+    }
     if (target.hasAttribute("data-scenario-choice")) {
       const choice = window.APPLIED_SCENARIOS.find(s=>s.id===scenarioId)?.choices[Number(target.dataset.scenarioChoice)];
       const feedback = $("#scenario-feedback");
@@ -223,13 +303,14 @@
 
   function route() {
     if (location.hash === "#main") return;
-    const previousTopic = topic, previousLesson = current, previousScenario = scenarioId;
+    const previousTopic = topic, previousLesson = current, previousScenario = scenarioId, previousSovereignty = sovereigntyPage;
     const [id, lesson] = location.hash.slice(1).split("/");
     topic = ["library","practice"].includes(id) || topics.some(t=>t.id===id) ? id : "inference";
     scenarioId = topic === "practice" ? lesson || "" : "";
+    sovereigntyPage = topic === "sovereignty" ? lesson || "learn" : "learn";
     if (topic === "inference" && lesson) current = lesson;
     render();
-    if (previousTopic !== topic || previousScenario !== scenarioId) window.scrollTo({top:0,behavior:"instant"});
+    if (previousTopic !== topic || previousScenario !== scenarioId || previousSovereignty !== sovereigntyPage) window.scrollTo({top:0,behavior:"instant"});
     else if (previousLesson !== current) $("#lesson-tabs")?.scrollIntoView({block:"start",behavior:"instant"});
   }
   window.addEventListener("hashchange", route);

@@ -19,7 +19,7 @@ window.LEARNING_RESEARCH = {
     { to:"llm", title:"5. Fill the model-foundation gaps", output:"Use the Hugging Face course selectively. Explain attention, dense versus MoE models, training versus inference and model adaptation." },
     { to:"retrieval", title:"6. Build a grounded, bounded workflow", output:"Use synthetic or public data. Compare retrieval, context selection and one tool call; record permissions and failure cases." },
     { to:"evaluation", title:"7. Prove the result", output:"Create a small held-out test set with segment-level quality, latency and cost. Add regression tests before changing models or prompts." },
-    { to:"sovereignty", title:"8. Defend the deployment choice", output:"Produce a control map covering data, keys, operators, jurisdiction, evidence, portability and exit. Separate technical controls from legal conclusions." }
+    { to:"sovereignty", title:"8. Defend the deployment choice", output:"Use the EMEA guide to prepare a plain-English decision brief: purpose, applicable rules, supplier commitments, evidence, continuity and exit. Separate provider claims from legal conclusions." }
   ],
   themes: [
     { title:"Serving is a systems problem", text:"NVIDIA and vLLM put memory management, batching, quantisation and parallelism at the centre of inference optimisation. The learning path starts with these constraints before comparing products.", url:"https://nvidia.github.io/TensorRT-LLM/performance/performance-tuning-guide/index.html" },

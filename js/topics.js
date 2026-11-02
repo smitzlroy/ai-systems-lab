@@ -71,25 +71,9 @@ window.LEARNING_TOPICS = [
     experiment: "Planned lab: see how an impressive overall score can hide failures in a small but important segment."
   },
   {
-    id: "sovereignty", title: "European sovereignty", code: "07",
+    id: "sovereignty", title: "EMEA sovereignty", code: "07",
     heading: "Where it runs is only the first question.",
-    intro: "Explore who controls an AI service, who can access its data, which laws apply, and whether you can keep operating or leave.",
-    layers: ["LAW + ACCOUNTABILITY", "OPERATIONAL CONTROL", "DATA + INFRASTRUCTURE"],
-    modules: [
-      ["Control and jurisdiction", "Ownership, operator access, governing law, supply-chain dependencies and authority over updates. Distinguish residency from sovereignty."],
-      ["Data and keys", "Personal data, prompts, outputs, logs, backups and support access. Map encryption, key custody, transfers and retention across the full service."],
-      ["European regulation", "Study the EU AI Act and GDPR: roles, risk classification, obligations and evidence. Track implementation dates against official sources rather than hard-coding assumptions."],
-      ["Resilience and sector rules", "Explore NIS2, DORA and the Data Act alongside national and sector requirements. Establish which rules apply to the organisation and service."],
-      ["Technical and operational choices", "Public cloud, dedicated capacity, on-premises and disconnected operation. Compare isolation, auditability, patching and incident-response responsibilities."],
-      ["Portability and autonomy", "Model licences, reproducible deployment, switching providers, skills and exit plans. Test whether control survives a supplier outage or contract change."]
-    ],
-    experiment: "Planned lab: map a service across data, operational, technological and legal control; identify gaps rather than assign a simplistic sovereignty score.",
-    sources: [
-      ["EU AI Act · European Commission", "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai"],
-      ["GDPR · EUR-Lex", "https://eur-lex.europa.eu/eli/reg/2016/679/oj"],
-      ["NIS2 · EUR-Lex", "https://eur-lex.europa.eu/eli/dir/2022/2555/oj"],
-      ["DORA · EUR-Lex", "https://eur-lex.europa.eu/eli/reg/2022/2554/oj"],
-      ["Data Act · EUR-Lex", "https://eur-lex.europa.eu/eli/reg/2023/2854/oj"]
-    ]
+    intro: "Learn how control, law, evidence and supplier choices fit together across Europe, the Middle East and Africa.",
+    layers: ["LAW + ACCOUNTABILITY", "OPERATIONAL CONTROL", "DATA + INFRASTRUCTURE"]
   }
 ];
